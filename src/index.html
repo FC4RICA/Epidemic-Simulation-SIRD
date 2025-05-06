@@ -4543,145 +4543,155 @@
 			}
 
 			function handleCalculationPlaying() {
-				if (currentSim == 'simpleCase') {
-					moveParticles('simpleCaseGraphB')
-					if (timecount % timeStepsPerDay == 0) {
-						prepInteractionData('simpleCaseGraphB')
-					}
-					if (timecount % timeStepsPerDay == 1) {
-						updatePlotGraph()
-						interactions('simpleCaseGraphB')
-						dayCount = dayCount + 1
-					}
-				}
-				
-				else if (currentSim == 'simpleCase&Q') {
-					moveParticles('simpleCaseGraph&QB')
-					moveParticles('simpleQuarantineB')
-					if (timecount % timeStepsPerDay == 0) {
-						prepInteractionData('simpleCaseGraph&QB')
-						prepInteractionData('simpleQuarantineB')
-					}
-					if (timecount % timeStepsPerDay == 1) {
-						updatePlotGraph()
-						interactions('simpleCaseGraph&QB')
-						interactions('simpleQuarantineB')
-						dayCount = dayCount + 1
-					}
-				}
-				else if (currentSim == 'centralLocationCase') {
-					moveParticles('centralLocationCaseB')
-					if (timecount % timeStepsPerDay == 0) {
-						prepInteractionData('centralLocationCaseB')
-					}
-					if (timecount % timeStepsPerDay == 1) {
-						updatePlotGraph()
-						interactions('centralLocationCaseB')
-						dayCount = dayCount + 1
-					}
-				}
-				else if (currentSim == 'centralLocationQuarantineCase') {
-					moveParticles('centralLocationQuarantineCaseB')
-					moveParticles('centralLocationQuarantineB')
-					if (timecount % timeStepsPerDay == 0) {
-						prepInteractionData('centralLocationQuarantineCaseB')
-						prepInteractionData('centralLocationQuarantineB')
-					}
-					if (timecount % timeStepsPerDay == 1) {
-						updatePlotGraph()
-						interactions('centralLocationQuarantineCaseB')
-						interactions('centralLocationQuarantineB')
-						dayCount = dayCount + 1
-					}
-				}
-				else if (currentSim == 'communitiesCase') {
-					for (bdi = 0; bdi < 3; bdi++) {
-						for (bdj = 0; bdj < 3; bdj++) {
-							moveParticles('communitiesCaseB_' + bdi + '_' + bdj)
-						}
-					}
-					if (timecount % timeStepsPerDay == 0) {
-						for (bdi = 0; bdi < 3; bdi++) {
-							for (bdj = 0; bdj < 3; bdj++) {
-								prepInteractionData('communitiesCaseB_' + bdi + '_' + bdj)
-							}
-						}
-					}
-					if (timecount % timeStepsPerDay == 1) {
-						updatePlotGraph()
-						for (bdi = 0; bdi < 3; bdi++) {
-							for (bdj = 0; bdj < 3; bdj++) {
-								interactions('communitiesCaseB_' + bdi + '_' + bdj)
-							}
-						}
-						dayCount = dayCount + 1
-					}
-				}
-				else if (currentSim == 'communitiesQuarantineCase') {
-					for (bdi = 0; bdi < 3; bdi++) {
-						for (bdj = 0; bdj < 3; bdj++) {
-							moveParticles('communitiesQuarantineCaseB_' + bdi + '_' + bdj)
-						}
-					}
-					moveParticles('communitiesQuarantineB')
-					if (timecount % timeStepsPerDay == 0) {
-						for (bdi = 0; bdi < 3; bdi++) {
-							for (bdj = 0; bdj < 3; bdj++) {
-								prepInteractionData('communitiesQuarantineCaseB_' + bdi + '_' + bdj)
-							}
-						}
-						prepInteractionData('communitiesQuarantineB')
-					}
+        switch (currentSim) {
+          case 'simpleCase':
+            moveParticles('simpleCaseGraphB');
+            if (timecount % timeStepsPerDay === 0) {
+              prepInteractionData('simpleCaseGraphB');
+            }
+            if (timecount % timeStepsPerDay === 1) {
+              updatePlotGraph();
+              interactions('simpleCaseGraphB');
+              dayCount++;
+            }
+            break;
 
-					if (timecount % timeStepsPerDay == 1) {
-						updatePlotGraph()
-						for (bdi = 0; bdi < 3; bdi++) {
-							for (bdj = 0; bdj < 3; bdj++) {
-								interactions('communitiesQuarantineCaseB_' + bdi + '_' + bdj)
-							}
-						}
-						interactions('communitiesQuarantineB')
-						dayCount = dayCount + 1
-					}
-				}
-			}
+          case 'simpleCase&Q':
+            moveParticles('simpleCaseGraph&QB');
+            moveParticles('simpleQuarantineB');
+            if (timecount % timeStepsPerDay === 0) {
+              prepInteractionData('simpleCaseGraph&QB');
+              prepInteractionData('simpleQuarantineB');
+            }
+            if (timecount % timeStepsPerDay === 1) {
+              updatePlotGraph();
+              interactions('simpleCaseGraph&QB');
+              interactions('simpleQuarantineB');
+              dayCount++;
+            }
+            break;
 
-			function handleAnimationPlaying() {
-				if (currentSim == 'simpleCase') {
-					animateParticles('simpleCaseGraphB')
-				}
-				else if (currentSim == 'simpleCase&Q') {
-					animateParticles('simpleCaseGraph&QB')
-					animateParticles('simpleQuarantineB')
-				}
-				else if (currentSim == 'centralLocationCase') {
-					animateParticles('centralLocationCaseB')
-				}
-				else if (currentSim == 'centralLocationQuarantineCase') {
-					animateParticles('centralLocationQuarantineCaseB')
-					animateParticles('centralLocationQuarantineB')
-				}
-				else if (currentSim == 'communitiesCase') {
-					for (bdi = 0; bdi < 3; bdi++) {
-						for (bdj = 0; bdj < 3; bdj++) {
-							animateParticles('communitiesCaseB_' + bdi + '_' + bdj)
-						}
-					}
-				}
-				else if (currentSim == 'communitiesQuarantineCase') {
-					for (bdi = 0; bdi < 3; bdi++) {
-						for (bdj = 0; bdj < 3; bdj++) {
-							animateParticles('communitiesQuarantineCaseB_' + bdi + '_' + bdj)
-						}
-					}
-					animateParticles('communitiesQuarantineB')
-				}
-			}
+          case 'centralLocationCase':
+            moveParticles('centralLocationCaseB');
+            if (timecount % timeStepsPerDay === 0) {
+              prepInteractionData('centralLocationCaseB');
+            }
+            if (timecount % timeStepsPerDay === 1) {
+              updatePlotGraph();
+              interactions('centralLocationCaseB');
+              dayCount++;
+            }
+            break;
 
+          case 'centralLocationQuarantineCase':
+            moveParticles('centralLocationQuarantineCaseB');
+            moveParticles('centralLocationQuarantineB');
+            if (timecount % timeStepsPerDay === 0) {
+              prepInteractionData('centralLocationQuarantineCaseB');
+              prepInteractionData('centralLocationQuarantineB');
+            }
+            if (timecount % timeStepsPerDay === 1) {
+              updatePlotGraph();
+              interactions('centralLocationQuarantineCaseB');
+              interactions('centralLocationQuarantineB');
+              dayCount++;
+            }
+            break;
+
+          case 'communitiesCase':
+            for (let bdi = 0; bdi < 3; bdi++) {
+              for (let bdj = 0; bdj < 3; bdj++) {
+                moveParticles(`communitiesCaseB_${bdi}_${bdj}`);
+              }
+            }
+            if (timecount % timeStepsPerDay === 0) {
+              for (let bdi = 0; bdi < 3; bdi++) {
+                for (let bdj = 0; bdj < 3; bdj++) {
+                  prepInteractionData(`communitiesCaseB_${bdi}_${bdj}`);
+                }
+              }
+            }
+            if (timecount % timeStepsPerDay === 1) {
+              updatePlotGraph();
+              for (let bdi = 0; bdi < 3; bdi++) {
+                for (let bdj = 0; bdj < 3; bdj++) {
+                  interactions(`communitiesCaseB_${bdi}_${bdj}`);
+                }
+              }
+              dayCount++;
+            }
+            break;
+
+          case 'communitiesQuarantineCase':
+            for (let bdi = 0; bdi < 3; bdi++) {
+              for (let bdj = 0; bdj < 3; bdj++) {
+                moveParticles(`communitiesQuarantineCaseB_${bdi}_${bdj}`);
+              }
+            }
+            moveParticles('communitiesQuarantineB');
+            if (timecount % timeStepsPerDay === 0) {
+              for (let bdi = 0; bdi < 3; bdi++) {
+                for (let bdj = 0; bdj < 3; bdj++) {
+                  prepInteractionData(`communitiesQuarantineCaseB_${bdi}_${bdj}`);
+                }
+              }
+              prepInteractionData('communitiesQuarantineB');
+            }
+            if (timecount % timeStepsPerDay === 1) {
+              updatePlotGraph();
+              for (let bdi = 0; bdi < 3; bdi++) {
+                for (let bdj = 0; bdj < 3; bdj++) {
+                  interactions(`communitiesQuarantineCaseB_${bdi}_${bdj}`);
+                }
+              }
+              interactions('communitiesQuarantineB');
+              dayCount++;
+            }
+            break;
+        }
+      }\
+
+      function handleAnimationPlaying() {
+        switch (currentSim) {
+          case 'simpleCase':
+            animateParticles('simpleCaseGraphB');
+            break;
+
+          case 'simpleCase&Q':
+            animateParticles('simpleCaseGraph&QB');
+            animateParticles('simpleQuarantineB');
+            break;
+
+          case 'centralLocationCase':
+            animateParticles('centralLocationCaseB');
+            break;
+
+          case 'centralLocationQuarantineCase':
+            animateParticles('centralLocationQuarantineCaseB');
+            animateParticles('centralLocationQuarantineB');
+            break;
+
+          case 'communitiesCase':
+            for (let bdi = 0; bdi < 3; bdi++) {
+              for (let bdj = 0; bdj < 3; bdj++) {
+                animateParticles(`communitiesCaseB_${bdi}_${bdj}`);
+              }
+            }
+            break;
+
+          case 'communitiesQuarantineCase':
+            for (let bdi = 0; bdi < 3; bdi++) {
+              for (let bdj = 0; bdj < 3; bdj++) {
+                animateParticles(`communitiesQuarantineCaseB_${bdi}_${bdj}`);
+              }
+            }
+            animateParticles('communitiesQuarantineB');
+            break;
+        }
+      }
 
 			function setAnimationDetails() {
 				frameInterval = (1000/simulationParameters.frameRate)
-
 				calculationFrameInterval = (simulationParameters.frameRate/(timeStepsPerDay*simulationParameters.daysEverySecond))*frameInterval
 			}
 
@@ -4689,7 +4699,7 @@
 
 			dayCount = 0
 
-			function playAnimationLoop(event) {
+			function playAnimationLoop() {
 				loopinterval = setInterval(frame, frameInterval);
 				function frame() {
 					loopcount = loopcount + 1
@@ -4699,7 +4709,7 @@
 				}
 			}
 
-			function playCalculationLoop(event) {
+			function playCalculationLoop() {
 				loopinterval2 = setInterval(frame, calculationFrameInterval);
 				function frame() {
 					timecount = timecount + 1
@@ -4712,287 +4722,181 @@
 			playCalculationLoop()
 			playAnimationLoop()
 
-			function playpauseSim(event) {
-				if (playing) {
-			 		playing = false
-			 		document.getElementById('playbutton').value = 'PLAY'
-			 	}
-			 	else {
-			 		playing = true
-			 		document.getElementById('playbutton').value = 'PAUSE'
-			 	}
+			function playpauseSim() {
+        if (playing) {
+          playing = false
+          document.getElementById('playbutton').value = 'PLAY'
+        }
+        else {
+          playing = true
+          document.getElementById('playbutton').value = 'PAUSE'
+        }
 			}
 
-			function resetSim(event) {
-				if (currentSim == 'simpleCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-					removeParticlesFromBoundary('simpleCaseGraphG', 'simpleCaseGraphB')
-					removeGraph('simpleCaseGraphG')
-					removeGraph('plotG')
-					dayCount = 0
-					setUpSimpleCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'simpleCase&Q') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-					removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleCaseGraph&QB')
-					removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleQuarantineB')
-					removeGraph('simpleCaseGraph&QG')
-					removeGraph('plotG')
-					dayCount = 0
-					setUpSimpleQuarantineCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'centralLocationCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-					removeParticlesFromBoundary('centralLocationCaseG', 'centralLocationCaseB')
-					removeGraph('centralLocationCaseG')
-					removeGraph('plotG')
-					dayCount = 0
-					setUpCentralLocationCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'centralLocationQuarantineCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-					removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineCaseB')
-					removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineB')
-					removeGraph('centralLocationQuarantineCaseGraph')
-					removeGraph('plotG')
-					dayCount = 0
-					setUpCentralLocationQuarantineCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'communitiesCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-			 		for (bdi = 0; bdi < 3; bdi++) {
-						for (bdj = 0; bdj < 3; bdj++) {
-							removeParticlesFromBoundary('communitiesCaseGraph', 'communitiesCaseB_' + bdi + '_' + bdj)
-						}
-					}
-					removeGraph('communitiesCaseGraph')
-					removeGraph('plotG')
-					dayCount = 0
-					setUpCommunitiesCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'communitiesQuarantineCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
+			function resetSim() {
+        clearInterval(loopinterval);
+        clearInterval(loopinterval2);
+        timecount = 0;
+        loopcount = 0;
+        removeGraph('plotG');
+        dayCount = 0;
 
-			 		timecount = 0
-			 		loopcount = 0
-			 		for (bdi = 0; bdi < 3; bdi++) {
-						for (bdj = 0; bdj < 3; bdj++) {
-							removeParticlesFromBoundary('communitiesQuarantineCaseGraph', 'communitiesQuarantineCaseB_' + bdi + '_' + bdj)
-						}
-					}
-					removeParticlesFromBoundary('communitiesQuarantineCaseGraph', 'communitiesQuarantineB')
-					removeGraph('communitiesQuarantineCaseGraph')
-					removeGraph('plotG')
-					dayCount = 0
-					setUpCommunitiesQuarantineCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-			}
+        switch (currentSim) {
+          case 'simpleCase':
+            removeParticlesFromBoundary('simpleCaseGraphG', 'simpleCaseGraphB');
+            removeGraph('simpleCaseGraphG');
+            setUpSimpleCaseGraph();
+            break;
 
-			function resetSimHard(event) {
-				if (currentSim == 'simpleCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-			 		if (graphData['simpleCaseGraphG'] != undefined) {
-			 			removeParticlesFromBoundary('simpleCaseGraphG', 'simpleCaseGraphB')
-						removeGraph('simpleCaseGraphG')
-			 		}
-						
-					removeGraph('plotG')
-					dayCount = 0
-					setUpSimpleCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'simpleCase&Q') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-			 		if (graphData['simpleCaseGraph&QG'] != undefined) {
-			 			removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleCaseGraph&QB')
-						removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleQuarantineB')
-						removeGraph('simpleCaseGraph&QG')
-			 		}
-						
-					removeGraph('plotG')
-					dayCount = 0
-					setUpSimpleQuarantineCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'centralLocationCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-			 		if (graphData['centralLocationCaseG'] != undefined) {
-						removeParticlesFromBoundary('centralLocationCaseG', 'centralLocationCaseB')
-						removeGraph('centralLocationCaseG')
-					}
-					removeGraph('plotG')
-					dayCount = 0
-					setUpCentralLocationCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'centralLocationQuarantineCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		timecount = 0
-			 		loopcount = 0
-			 		if (graphData['centralLocationQuarantineCaseGraph'] != undefined) {
-						removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineCaseB')
-						removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineB')
-						removeGraph('centralLocationQuarantineCaseGraph')
-					}
+          case 'simpleCase&Q':
+            removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleCaseGraph&QB');
+            removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleQuarantineB');
+            removeGraph('simpleCaseGraph&QG');
+            setUpSimpleQuarantineCaseGraph();
+            break;
+
+          case 'centralLocationCase':
+            removeParticlesFromBoundary('centralLocationCaseG', 'centralLocationCaseB');
+            removeGraph('centralLocationCaseG');
+            setUpCentralLocationCaseGraph();
+            break;
+
+          case 'centralLocationQuarantineCase':
+            removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineCaseB');
+            removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineB');
+            removeGraph('centralLocationQuarantineCaseGraph');
+            setUpCentralLocationQuarantineCaseGraph();
+            break;
+
+          case 'communitiesCase':
+            for (let bdi = 0; bdi < 3; bdi++) {
+              for (let bdj = 0; bdj < 3; bdj++) {
+                removeParticlesFromBoundary('communitiesCaseGraph', `communitiesCaseB_${bdi}_${bdj}`);
+              }
+            }
+            removeGraph('communitiesCaseGraph');
+            setUpCommunitiesCaseGraph();
+            break;
+
+          case 'communitiesQuarantineCase':
+            for (let bdi = 0; bdi < 3; bdi++) {
+              for (let bdj = 0; bdj < 3; bdj++) {
+                removeParticlesFromBoundary('communitiesQuarantineCaseGraph', `communitiesQuarantineCaseB_${bdi}_${bdj}`);
+              }
+            }
+            removeParticlesFromBoundary('communitiesQuarantineCaseGraph', 'communitiesQuarantineB');
+            removeGraph('communitiesQuarantineCaseGraph');
+            setUpCommunitiesQuarantineCaseGraph();
+            break;
+        }
+
+        setUpPlotGraph();
+        handleSDObedience();
+        setAnimationDetails();
+        playCalculationLoop();
+        playAnimationLoop();
+      }
+
+
+			function resetSimHard() {
+        clearInterval(loopinterval);
+        clearInterval(loopinterval2);
+        timecount = 0
+        loopcount = 0
+
+        removeGraph('plotG')
+        dayCount = 0
+
+        switch (currentSim) {
+          case 'simpleCase':
+            if (graphData['simpleCaseGraphG'] != undefined) {
+              removeParticlesFromBoundary('simpleCaseGraphG', 'simpleCaseGraphB')
+              removeGraph('simpleCaseGraphG')
+            }
+
+            setUpSimpleCaseGraph()
+
+            break
+
+          case 'simpleCase&Q':
+            if (graphData['simpleCaseGraph&QG'] != undefined) {
+              removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleCaseGraph&QB')
+              removeParticlesFromBoundary('simpleCaseGraph&QG', 'simpleQuarantineB')
+              removeGraph('simpleCaseGraph&QG')
+            }
+
+            setUpSimpleQuarantineCaseGraph()
+
+            break
+
+          case 'centralLocationCase':
+            if (graphData['centralLocationCaseG'] != undefined) {
+              removeParticlesFromBoundary('centralLocationCaseG', 'centralLocationCaseB')
+              removeGraph('centralLocationCaseG')
+            }
+
+            setUpCentralLocationCaseGraph()
+
+            break
 					
-					removeGraph('plotG')
-					dayCount = 0
-					setUpCentralLocationQuarantineCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'communitiesCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		changeParameterWithoutReload(0, 0.2)
-			 		changeParameterWithoutReload(2, 4)
-			 		changeParameterWithoutReload(15, 0.4)
-			 		
+          case 'centralLocationQuarantineCase':
+            if (graphData['centralLocationQuarantineCaseGraph'] != undefined) {
+              removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineCaseB')
+              removeParticlesFromBoundary('centralLocationQuarantineCaseGraph', 'centralLocationQuarantineB')
+              removeGraph('centralLocationQuarantineCaseGraph')
+            }
 
-			 		timecount = 0
-			 		loopcount = 0
-			 		if (graphData['communitiesCaseGraph'] != undefined) {
-				 		for (bdi = 0; bdi < 3; bdi++) {
-							for (bdj = 0; bdj < 3; bdj++) {
-								removeParticlesFromBoundary('communitiesCaseGraph', 'communitiesCaseB_' + bdi + '_' + bdj)
-							}
-						}
-						removeGraph('communitiesCaseGraph')
-					}
-					removeGraph('plotG')
-					dayCount = 0
-					setUpCommunitiesCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
-				}
-				else if (currentSim == 'communitiesQuarantineCase') {
-					// playing = false
-					clearInterval(loopinterval);
-			 		clearInterval(loopinterval2);
-			 		changeParameterWithoutReload(0, 0.2)
-			 		changeParameterWithoutReload(2, 4)
-			 		changeParameterWithoutReload(15, 0.4)
-			 		changeParameterWithoutReload(7, 3)
-			 		changeParameterWithoutReload(8, 6)
-			 		changeParameterWithoutReload(9, 20)
+            setUpCentralLocationQuarantineCaseGraph()
 
-			 		timecount = 0
-			 		loopcount = 0
-			 		if (graphData['communitiesQuarantineCaseGraph'] != undefined) {
-				 		for (bdi = 0; bdi < 3; bdi++) {
-							for (bdj = 0; bdj < 3; bdj++) {
-								removeParticlesFromBoundary('communitiesQuarantineCaseGraph', 'communitiesQuarantineCaseB_' + bdi + '_' + bdj)
-							}
-						}
-						removeParticlesFromBoundary('communitiesQuarantineCaseGraph', 'communitiesQuarantineB')
-						removeGraph('communitiesQuarantineCaseGraph')
-					}
-					removeGraph('plotG')
-					dayCount = 0
+            break
+
+          case 'communitiesCase':
+            changeParameterWithoutReload(0, 0.2)
+            changeParameterWithoutReload(2, 4)
+            changeParameterWithoutReload(15, 0.4)
+
+            if (graphData['communitiesCaseGraph'] != undefined) {
+              for (bdi = 0; bdi < 3; bdi++) {
+                for (bdj = 0; bdj < 3; bdj++) {
+                  removeParticlesFromBoundary('communitiesCaseGraph', 'communitiesCaseB_' + bdi + '_' + bdj)
+                }
+              }
+              removeGraph('communitiesCaseGraph')
+            }
+            
+            setUpCommunitiesCaseGraph()
+
+            break
+					
+          case 'communitiesQuarantineCase':
+            changeParameterWithoutReload(0, 0.2)
+            changeParameterWithoutReload(2, 4)
+            changeParameterWithoutReload(15, 0.4)
+            changeParameterWithoutReload(7, 3)
+            changeParameterWithoutReload(8, 6)
+            changeParameterWithoutReload(9, 20)
+
+            if (graphData['communitiesQuarantineCaseGraph'] != undefined) {
+              for (bdi = 0; bdi < 3; bdi++) {
+                for (bdj = 0; bdj < 3; bdj++) {
+                  removeParticlesFromBoundary('communitiesQuarantineCaseGraph', 'communitiesQuarantineCaseB_' + bdi + '_' + bdj)
+                }
+              }
+              removeParticlesFromBoundary('communitiesQuarantineCaseGraph', 'communitiesQuarantineB')
+              removeGraph('communitiesQuarantineCaseGraph')
+            }
+					
 					setUpCommunitiesQuarantineCaseGraph()
-					setUpPlotGraph()
-					handleSDObedience()
-					setAnimationDetails()
-					playCalculationLoop()
-			 		playAnimationLoop()
-					// playing = true
+
+          break
+					
 				}
+
+        setUpPlotGraph()
+        handleSDObedience()
+        setAnimationDetails()
+        playCalculationLoop()
+        playAnimationLoop()
 			}
 
 
@@ -5077,17 +4981,6 @@
 				}
 					
 			}
-
-			function handleLayout2() {
-				if (dmode == 'portrait') {
-					
-				}
-				if (dmode == 'landscape') {
-					
-				}
-			}
-
-			// handleLayout2()
 
 
 			</script>
