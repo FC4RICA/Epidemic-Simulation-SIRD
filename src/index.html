@@ -2413,8 +2413,6 @@
 			parameterData = {}
 
 			simulationParameters.reproductiveNumber = 0
-
-      simulationParameters.probabilityOfDeath = 0.1
 			
 			parameterData[0] = {name: 'infectionRadius', div: 'Infection Radius &nbsp&nbsp @@@',initValue: 0.1, max: 0.4, min: 0.01, step: 0.001, color: '10, 100%, 63%', transform: 'parseFloat(#paraValue#)', requiresReset: false, runFAtEnd: ''}
 			parameterData[1] = {name: 'probabilityofInfection', div: 'Chance of Infection on a given day is @@@%',initValue: 6, max: 100, min: 0, step: 0.01, color: '10, 100%, 63%', transform: 'parseFloat(#paraValue#)/100', requiresReset: false, runFAtEnd: ''}
@@ -2422,7 +2420,7 @@
 			if (dmode == 'landscape') {
 				divAdjust = '@@@% population/community infected initially<br/><font style="color:grey; font-size: 0.8vmax;">(In community case, @@@% of the community is infected initially, not the population.)</font>'
 			}
-			parameterData[2] = {name: 'fractionInfectedInitially', div: divAdjust, initValue: 1, max: 100, min: 0, step: 0.1, color: '10, 100%, 63%', transform: 'parseFloat(#paraValue#)/100', requiresReset: true, runFAtEnd: ''}
+			parameterData[2] = {name: 'fractionInfectedInitially', div: divAdjust, initValue: 1.5, max: 100, min: 0, step: 0.1, color: '10, 100%, 63%', transform: 'parseFloat(#paraValue#)/100', requiresReset: true, runFAtEnd: ''}
 			parameterData[3] = {name: 'infectionTime', div: 'Infection duration is @@@ days',initValue: 25, max: 100, min: 1, step: 1, color: '10, 100%, 63%', transform: 'parseInt(#paraValue#)', requiresReset: false, runFAtEnd: ''}
 			parameterData[4] = {name: 'socialDistancingFactorA', div: 'Social Distancing Factor &nbsp&nbsp @@@',initValue: 0, max: 1, min: 0, step: 0.01, color: '40, 100%, 50%', transform: 'parseFloat(#paraValue#)', requiresReset: false, runFAtEnd: 'boundaryForceC = linearValue(0, 1, 0.1, 2,simulationParameters.socialDistancingFactorA)'}
 			parameterData[5] = {name: 'socialDistanceObedientPop', div: '@@@% of the population obeys Social Distancing',initValue: 100, max: 100, min: 0, step: 0.1, color: '40, 100%, 50%', transform: 'parseFloat(#paraValue#)/100', requiresReset: false, runFAtEnd: 'handleSDObedience()'}
@@ -2456,6 +2454,7 @@
 
 			parameterData[19] = {name: 'maskWearPercentage', div: '@@@% of the population wears masks',initValue: 60, max: 100, min: 0, step: 1, color: '344, 100%, 50%', transform: 'parseInt(#paraValue#)', requiresReset: true, runFAtEnd: 'setAnimationDetails()'}
 			
+      parameterData[20] = {name: 'probabilityOfDeath', div: 'There is a @@@% chance of death per day for infected population.', initValue: 1, max: 100, min: 0, step: 0.01, color: '161, 100%, 15.8%', transform: 'parseFloat(#paraValue#)/100', requiresReset: false, runFAtEnd: ''}
 
 			parameterSliderRMap = {}
 
@@ -3450,6 +3449,8 @@
 			function moveParticles(ofBoundary) {
 				partDB = particleData[ofBoundary]
 				for (var particleIndex in partDB) {
+          if (particleData[ofBoundary][particleIndex].state == 'deceased') continue
+
 					if (partDB[particleIndex].moveAnimation) {
 						moveFrom = partDB[particleIndex].moveAnimationFrom
 						moveTo = partDB[particleIndex].moveAnimationTo
