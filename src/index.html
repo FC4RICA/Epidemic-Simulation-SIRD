@@ -2413,6 +2413,8 @@
 			parameterData = {}
 
 			simulationParameters.reproductiveNumber = 0
+
+      simulationParameters.probabilityOfDeath = 0.1
 			
 			parameterData[0] = {name: 'infectionRadius', div: 'Infection Radius &nbsp&nbsp @@@',initValue: 0.1, max: 0.4, min: 0.01, step: 0.001, color: '10, 100%, 63%', transform: 'parseFloat(#paraValue#)', requiresReset: false, runFAtEnd: ''}
 			parameterData[1] = {name: 'probabilityofInfection', div: 'Chance of Infection on a given day is @@@%',initValue: 6, max: 100, min: 0, step: 0.01, color: '10, 100%, 63%', transform: 'parseFloat(#paraValue#)/100', requiresReset: false, runFAtEnd: ''}
@@ -2530,8 +2532,8 @@
 
 			addVariousParameters()
 
-			infectionStates = ['infected', 'susceptible', 'removed']
-			stateColors = {'infected':'10, 100%,70%','susceptible': '195, 100%, 50%', 'removed':'190, 0%, 40%', 'noSymptoms' : '58, 100%, 50%'}
+			infectionStates = ['infected', 'susceptible', 'removed', 'deceased']
+			stateColors = {'infected':'10, 100%,70%','susceptible': '195, 100%, 50%', 'removed':'190, 0%, 40%', 'noSymptoms' : '58, 100%, 50%', 'deceased' : '161, 100%, 15.8%'}
 
 			loopcount = 0
 			timecount = 0
@@ -2652,6 +2654,20 @@
 
 				addLine('plotG', 'yAxisLine', options)
 
+        options = {}
+        options.points = [[0, 0], [0, 0]]
+				options.pathcolor = 'hsla(' + stateColors['deceased'] + ',0)'
+				infectedLinePath = addPath('plotG', 'deceasedLine', options)[0]
+				infectedLinePath.style.fill = 'hsla(' + stateColors['deceased'] + ',1)'
+
+				options = {}
+				options.x = 10*1.03
+				options.y = 90
+				options.text = '1% Deceased'
+				options.fontSize = fontForLineLabel
+				options.textcolor = 'hsla(' + stateColors['deceased'] + ',1)'
+				addText('plotG', 'deceasedText', options)
+
 				options = {}
 				options.points = [[0, 0], [0, 0]]
 				options.pathcolor = 'hsla(' + stateColors['removed'] + ',0)'
@@ -2693,7 +2709,6 @@
 				options.fontSize = fontForLineLabel
 				options.textcolor = 'hsla(' + stateColors['infected'] + ',1)'
 				addText('plotG', 'infectedText', options)
-
 			}
 
 			setUpPlotGraph()
@@ -2716,26 +2731,6 @@
 				addPath(graphN, boundaryN, options)
 
 				createVicinityDB(boundaryN)
-			}
-
-			function boundaryRepulsiveForce(particle_location, boundaryN, forceConstant, minimumDistanceForForce) {
-				boundaryRanges = boundaryData[boundaryN]['range']
-				xBoundaryForce = 0
-				yBoundaryForce = 0
-				if (Math.abs(particle_location[0] - boundaryRanges[0]) < minimumDistanceForForce) {
-					xBoundaryForce = forceConstant*(particle_location[0] - boundaryRanges[0])/Math.abs(particle_location[0] - boundaryRanges[0])
-				}
-				else if (Math.abs(particle_location[0] - boundaryRanges[1]) < minimumDistanceForForce) {
-					xBoundaryForce = forceConstant*(particle_location[0] - boundaryRanges[1])/Math.abs(boundaryRanges[1] - particle_location[0])
-				}
-				if (Math.abs(particle_location[1] - boundaryRanges[2]) < minimumDistanceForForce) {
-					yBoundaryForce = forceConstant*(particle_location[1] - boundaryRanges[2])/Math.abs(particle_location[1] - boundaryRanges[2])
-				}
-				else if (Math.abs(particle_location[1] - boundaryRanges[3]) < minimumDistanceForForce) {
-					yBoundaryForce = forceConstant*(particle_location[1] - boundaryRanges[3])/Math.abs(boundaryRanges[3] - particle_location[1])
-				}
-
-				return [xBoundaryForce, yBoundaryForce]
 			}
 
 			particleData = {}
@@ -2847,15 +2842,15 @@
 				totalparticles = boundaryData[boundaryN]['particleNumber']
 				for (var partID in particleData[boundaryN]) {
 					delete particleData[boundaryN][partID]
-					particleCounts[graphN]['infected'] = 0
-					particleCounts[graphN]['susceptible'] = 0
-					particleCounts[graphN]['removed'] = 0
-
 					delete particleInfectionCount[graphN][partID]
 
 					removePoint(graphN, 'particle@' + partID, options)
 					removeCircle(graphN, 'particleCircle@' + partID)
 				}
+        particleCounts[graphN]['infected'] = 0
+        particleCounts[graphN]['susceptible'] = 0
+        particleCounts[graphN]['removed'] = 0
+        particleCounts[graphN]['deceased'] = 0
 			}
 
 			function setUpSimpleCaseGraph() {
@@ -2902,11 +2897,13 @@
 				particleCounts['simpleCaseGraphG']['infected'] = 0
 				particleCounts['simpleCaseGraphG']['susceptible'] = 0
 				particleCounts['simpleCaseGraphG']['removed'] = 0
+        particleCounts['simpleCaseGraphG']['deceased'] = 0
 
 				particleCountTimeLine['simpleCaseGraphG'] = {}
 				particleCountTimeLine['simpleCaseGraphG']['infected'] = []
 				particleCountTimeLine['simpleCaseGraphG']['susceptible'] = []
 				particleCountTimeLine['simpleCaseGraphG']['removed'] = []
+        particleCountTimeLine['simpleCaseGraphG']['deceased'] = []
 
 				particleInfectionCount['simpleCaseGraphG'] = {}
 
@@ -3430,6 +3427,26 @@
 			fractionOfDurationToReachCL = 0.3
 			returnToCLFactor = 1 - fractionOfDurationToReachCL
 
+      function boundaryRepulsiveForce(particle_location, boundaryN, forceConstant, minimumDistanceForForce) {
+				boundaryRanges = boundaryData[boundaryN]['range']
+				xBoundaryForce = 0
+				yBoundaryForce = 0
+				if (Math.abs(particle_location[0] - boundaryRanges[0]) < minimumDistanceForForce) {
+					xBoundaryForce = forceConstant*(particle_location[0] - boundaryRanges[0])/Math.abs(particle_location[0] - boundaryRanges[0])
+				}
+				else if (Math.abs(particle_location[0] - boundaryRanges[1]) < minimumDistanceForForce) {
+					xBoundaryForce = forceConstant*(particle_location[0] - boundaryRanges[1])/Math.abs(boundaryRanges[1] - particle_location[0])
+				}
+				if (Math.abs(particle_location[1] - boundaryRanges[2]) < minimumDistanceForForce) {
+					yBoundaryForce = forceConstant*(particle_location[1] - boundaryRanges[2])/Math.abs(particle_location[1] - boundaryRanges[2])
+				}
+				else if (Math.abs(particle_location[1] - boundaryRanges[3]) < minimumDistanceForForce) {
+					yBoundaryForce = forceConstant*(particle_location[1] - boundaryRanges[3])/Math.abs(boundaryRanges[3] - particle_location[1])
+				}
+
+				return [xBoundaryForce, yBoundaryForce]
+			}
+
 			function moveParticles(ofBoundary) {
 				partDB = particleData[ofBoundary]
 				for (var particleIndex in partDB) {
@@ -3599,6 +3616,11 @@
 				partDB = particleData[ofBoundary]
 				for (var particleIndex in partDB) {
 					mainParticle = particleIndex
+          
+          if (particleData[ofBoundary][mainParticle].state == 'deceased') {
+            continue
+          }
+          // infected neraby susceptible
 					if (particleData[ofBoundary][mainParticle].state == 'infected' && particleData[ofBoundary][mainParticle].moveAnimation == false) {
 						vicinityN = getParticleVicinityN([particleData[ofBoundary][mainParticle].x, particleData[ofBoundary][mainParticle].y], ofBoundary)
 						particlesSusceptible = getSurrounding(vicinityN, ofBoundary)
@@ -3660,6 +3682,26 @@
 							}
 						}
 
+            if (Math.random() < simulationParameters.probabilityOfDeath) {
+              particleData[ofBoundary][mainParticle].state = 'deceased'
+              particleData[ofBoundary][mainParticle].color = stateColors['deceased']
+
+              particleCounts[graphForParticle]['deceased'] = particleCounts[graphForParticle]['deceased'] + 1
+							particleCounts[graphForParticle]['infected'] = particleCounts[graphForParticle]['infected'] - 1
+
+              options.pointcolor = 'hsla(' + particleData[ofBoundary][mainParticle].color + ',1)'
+							updatePoint(boundaryData[ofBoundary]['graph'], 'particle@' + mainParticle, options)
+
+              particleData[ofBoundary][mainParticle].infectionAnimation = false
+							particleData[ofBoundary][mainParticle].infectionAnimationFrame = 0
+
+							options.radius = 0
+							options.stroke = 'hsla(0, 0%, 0%, 0)'
+							updateCircle(boundaryData[ofBoundary]['graph'], 'particleCircle@' + mainParticle, options)
+
+              continue
+            }
+
 						particleData[ofBoundary][mainParticle].daysSinceInfection = particleData[ofBoundary][mainParticle].daysSinceInfection + 1
 						
 						if (particleData[ofBoundary][mainParticle].daysSinceInfection > simulationParameters.infectionTime) {
@@ -3671,7 +3713,6 @@
 
 							options.pointcolor = 'hsla(' + particleData[ofBoundary][mainParticle].color + ',1)'
 							updatePoint(boundaryData[ofBoundary]['graph'], 'particle@' + mainParticle, options)
-
 
 							particleData[ofBoundary][mainParticle].infectionAnimation = false
 							particleData[ofBoundary][mainParticle].infectionAnimationFrame = 0
@@ -3716,8 +3757,6 @@
 							moveToBoundary(randomChoice(chooseFrom), ofBoundary, mainParticle, 2*timeStepsPerDay)
 						}
 					}
-						
-					
 				}
 			}
 
@@ -3740,22 +3779,26 @@
       // HAS STEAGES
 			function updatePlotGraph() {
 				graphForParticle = currentSimG
-				totalP = particleCounts[graphForParticle]['infected'] + particleCounts[graphForParticle]['susceptible'] + particleCounts[graphForParticle]['removed']
+				totalP = particleCounts[graphForParticle]['infected'] + particleCounts[graphForParticle]['susceptible'] + particleCounts[graphForParticle]['removed'] + particleCounts[graphForParticle]['deceased']
 				
+        deceasedV = particleCounts[graphForParticle]['deceased']*100/totalP
 				removedV = particleCounts[graphForParticle]['removed']*100/totalP
 				infectedV = particleCounts[graphForParticle]['infected']*100/totalP
 				susceptibleV = particleCounts[graphForParticle]['susceptible']*100/totalP
 
 				if (particleCountTimeLine[graphForParticle]['removed'].length > 0) {
+          particleCountTimeLine[graphForParticle]['deceased'].pop()
 					particleCountTimeLine[graphForParticle]['removed'].pop()
 					particleCountTimeLine[graphForParticle]['infected'].pop()
 					particleCountTimeLine[graphForParticle]['susceptible'].pop()
-
+          
+          particleCountTimeLine[graphForParticle]['deceased'].pop()
 					particleCountTimeLine[graphForParticle]['removed'].pop()
 					particleCountTimeLine[graphForParticle]['infected'].pop()
 					particleCountTimeLine[graphForParticle]['susceptible'].pop()
 				}
-				particleCountTimeLine[graphForParticle]['removed'].push([dayCount, 100])
+        particleCountTimeLine[graphForParticle]['deceased'].push([dayCount, 100])
+				particleCountTimeLine[graphForParticle]['removed'].push([dayCount, susceptibleV + infectedV + removedV])
 				particleCountTimeLine[graphForParticle]['susceptible'].push([dayCount, susceptibleV + infectedV])
 				particleCountTimeLine[graphForParticle]['infected'].push([dayCount, infectedV])
 
@@ -3764,23 +3807,33 @@
 					updateGraphZoom('plotG', {xmax: dayCount + (dayCount*0.3)})
 				}
 				
-
+        particleCountTimeLine[graphForParticle]['deceased'].push([dayCount, 0])
 				particleCountTimeLine[graphForParticle]['removed'].push([dayCount, 0])
 				particleCountTimeLine[graphForParticle]['infected'].push([dayCount, 0])
 				particleCountTimeLine[graphForParticle]['susceptible'].push([dayCount, 0])
 
+        particleCountTimeLine[graphForParticle]['deceased'].push([0, 0])
 				particleCountTimeLine[graphForParticle]['removed'].push([0, 0])
 				particleCountTimeLine[graphForParticle]['infected'].push([0, 0])
 				particleCountTimeLine[graphForParticle]['susceptible'].push([0, 0])
 
+        updatePathPoints('plotG', 'deceasedLine', particleCountTimeLine[graphForParticle]['deceased'])
 				updatePathPoints('plotG', 'removedLine', particleCountTimeLine[graphForParticle]['removed'])
 				updatePathPoints('plotG', 'infectedLine', particleCountTimeLine[graphForParticle]['infected'])
 				updatePathPoints('plotG', 'susceptibleLine', particleCountTimeLine[graphForParticle]['susceptible'])
-
 				
+        options = {}
+				options.text = deceasedV.toFixed(1) + '% deceased'
+				options.y = (120 + infectedV + susceptibleV)/2
+				ydeceasedTextLoc = (100 + infectedV + susceptibleV)/2
+				if (dayCount >= 10) {
+					options.x = dayCount*1.03
+				}
+				updateText('plotG', 'deceasedText', options)
+
 				options = {}
 				options.text = removedV.toFixed(1) + '% removed'
-				options.y = (100 + infectedV + susceptibleV)/2
+				options.y = (100 + infectedV + susceptibleV - deceasedV)/2
 				yremovedTextLoc = (100 + infectedV + susceptibleV)/2
 				if (dayCount >= 10) {
 					options.x = dayCount*1.03
@@ -3810,20 +3863,6 @@
 					options.x = dayCount*1.03
 				}
 				updateText('plotG', 'infectedText', options)
-
-				
-				casesSoFar = 0
-				totalInfections = 0
-				for (var infectedParticle in particleInfectionCount[graphForParticle]) {
-					if (particleInfectionCount[graphForParticle][infectedParticle].infectionC > 0) {
-						casesSoFar = casesSoFar + 1
-						totalInfections = totalInfections + particleInfectionCount[graphForParticle][infectedParticle].infectionC
-					}
-				}
-
-				// document.getElementById('R_0').innerHTML = 'R : ' + (totalInfections/casesSoFar).toFixed(2)
-				// console.log(totalInfections/casesSoFar, casesSoFar*100/totalP)
-
 			}
 
 			function handleCalculationPlaying() {
@@ -4267,7 +4306,6 @@
 			}
 
 			</script>
-
 
 	</body>
 <html>
